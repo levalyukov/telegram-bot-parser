@@ -40,7 +40,6 @@ def get_shedule(group:str):
                 result.append(f"{lesson_text}\n{study_couple}: {lesson_time}")
 
     driver.quit()
-    
     if found_lessons:
         return "\n".join(result)
     else:
@@ -59,5 +58,3 @@ def get_study_couple(container):
     last_two = timewindow_infos[:1]
     study_couple = [element.text for element in last_two]
     return study_couple
-
-print(get_shedule(110))
