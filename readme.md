@@ -11,4 +11,4 @@ The python-telegram-bot library is used to send a command to a telegram bot, whi
 
 ## License
 
-repository is licensed by the [MIT](lisence) license.
+repository is licensed by the [MIT](license) license.
