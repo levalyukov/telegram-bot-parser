@@ -7,7 +7,7 @@ The python-telegram-bot library is used to send a command to a telegram bot, whi
 **Supported languages**: 🇷🇺 \
 **Telegram bot**: [@PrecoScheduleBot](https://t.me/PrecoScheduleBot)
 
-<img src="https://sun9-3.userapi.com/impg/Rh3pluSdeo6pJkpWb0d6idTKNVBObtkk2Idfaw/hTar8xDf6Xo.jpg?size=585x315&quality=95&sign=3626282bef8f3f95c2198fff1f2ecda3&type=album">
+<p style="text-align: center"><img src="https://sun9-3.userapi.com/impg/Rh3pluSdeo6pJkpWb0d6idTKNVBObtkk2Idfaw/hTar8xDf6Xo.jpg?size=585x315&quality=95&sign=3626282bef8f3f95c2198fff1f2ecda3&type=album"></p>
 
 ## License
 
