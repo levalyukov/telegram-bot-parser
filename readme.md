@@ -1,6 +1,6 @@
 # Telegram Bot Student Schedule
 
-Thanks to this repository, you can understand how to parse sites using the [selenium](https://github.com/SeleniumHQ/selenium) and [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot) libraries.
+Thanks to this repository, you can understand how to parse sites using the [playwright](https://github.com/microsoft/playwright) and [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot) libraries.
 
 The python-telegram-bot library is used to send a command to a telegram bot, which then connects to the specified site and finds the necessary information using the script. In this case, the schedule for the specified study group.
 

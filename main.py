@@ -1,65 +1,72 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
+from playwright.async_api import async_playwright
 from datetime import datetime
 from config import config
 
-def get_schedule(group:str):
-    options = webdriver.ChromeOptions()             # ← Browser settings
-    options.add_argument("--headless")              # ← The argument of the option. In this case, all manipulations will occur without opening the browser itself
-    driver = webdriver.Chrome(options = options)    # ← Setting the browser for all site manipulations
-    driver.get(config['url'])                       # ← Getting a url from the config
+async def get_schedule(group: str):
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(headless=True)
+        page = await browser.new_page()
+        await page.goto(config['url'])
 
-    input_contaienr = driver.find_element(By.ID, 'select2-id_listgroups-container')   # ↰ — In order to enter the 'group' variable, you need to click on the input field 
-    input_contaienr.click()                                                           # ↲  
-    search_input = driver.find_element(By.CLASS_NAME, 'select2-search__field')        # ← The input field where you need to enter the 'group' variable
-    search_input.send_keys(str(group))                                                # ← Entering the 'group' variable in the search field
-    result = driver.find_element(By.CLASS_NAME, 'select2-results__option')      # ↰ — Finding a suitable study group by the variable 'group'
-    result.click()                                                              # ↲ 
-    get_shedule = driver.find_element(By.ID, 'id_submitbutton')                 # ↰ — Getting the full schedule of the specified study group
-    get_shedule.click()                                                         # ↲ 
+        await page.click(".select2-selection__rendered")
+        await page.wait_for_timeout(100)
+        await page.click(".select2-search__field")
+        await page.wait_for_timeout(100)
+        await page.fill(".select2-search__field", group)
+        await page.wait_for_timeout(100)
+        await page.click(".select2-results__option")
+        await page.wait_for_timeout(100)
+        await page.click("#id_submitbutton")
+        await page.wait_for_timeout(100)
 
-    # ↓
+        shedule = page.locator(".urk_shedule")
+        shedule_blocks = shedule.locator(".urk_sheduleblock")
+        all_lessons = await shedule_blocks.count()
+        timedate = datetime.today().strftime('%d.%m.%Y') 
 
-    shedule = driver.find_element(By.CLASS_NAME, 'urk_shedule')             # ↰ — 
-    all_lessons = shedule.find_elements(By.CLASS_NAME, 'urk_sheduleblock')  # ↲
-    timedate_system = datetime.today().strftime('%d.%m.%Y')                 # ← Getting the date of the system
-    found_lessons = False                                                   # ← The variable responsible for finding activities
-    
-    # ↓
+        shedule_visible = await shedule.is_visible()
+        shedule_count = await shedule.count()
 
-    result = []                                                             # ← The main array to which we will add information from the site
-    for lessons in all_lessons: 
-        lesson_data_details = lessons.find_element(By.CLASS_NAME, 'urk_sheduledate')
-        target_data = lesson_data_details.text.split(" ", 1)[1]
-        if str(target_data) == str(timedate_system):                        # ← If the date of the system and the date of the pair match, then we continue the cycle
-            found_lessons = True
-            lesson = lessons.find_elements(By.CLASS_NAME, 'urk_lessonblock')    # ← 
+        if shedule_count > 0 and shedule_visible:
+            result = []
+            found_lessons = False
             result.append(f"*Учебная группа*: {group}")
-            result.append(f"*Дата*: {target_data}")
-            for content in lesson:
-                name = content.find_element(By.CLASS_NAME, 'urk_lessondescription')     # ← Lesson name
-                study_couple = " ".join(get_study_couple(content))                      # ← Getting the serial number of the student couple
-                lesson_time = " - ".join(get_lesson_time(content))                      # ← Getting a student couple's time
-                result.append(f"\n{name.text}\n{study_couple}: {lesson_time}")          # ← Writing the result to an array
+            result.append(f"*Дата*: {timedate}")
+            for lesson in range(all_lessons):
+                lesson_block = shedule_blocks.nth(lesson)
+                lesson_date = lesson_block.locator(".urk_sheduledate")
+                dates = await lesson_date.count()
+                for time in range(dates):
+                    time_lesson = lesson_date.nth(time)
+                    content = await time_lesson.text_content()
+                    target = content.split()[1].strip()
+                    if str(target) == str(timedate):
+                        target_lessons = lesson_block.locator(".urk_lessonblock")
+                        count = await target_lessons.count()
+                        for content in range(count):
+                            found_lessons = True
+                            count_description = lesson_block.locator(".urk_lessondescription")
+                            nth_description = count_description.nth(content)
+                            result_description = await nth_description.text_content()
+                            target_description = result_description.replace('\n', ' ').strip()
 
-    driver.quit()
-    if found_lessons:   # ← If the lessons are found, then we pass an array with the final result
-        print("\n".join(result))
-        return "\n".join(result)
-    else:               # ← If there are still no lessons, it shows that there is no class schedule for today
-        print(f"Учебная группа: {group}\nДата: {timedate_system}\n\nНа сегодняшний день расписания нет.")
-        return f"*Учебная группа*: {group}\n*Дата*: {timedate_system}\n\nНа сегодняшний день расписания нет."
+                            target_lesson_date = target_lessons.locator(".urk_timewindow")
+                            nth_target_lesson_date = target_lesson_date.nth(content)
+                            lesson_time_coupe = nth_target_lesson_date.locator(".urk_timewindowinfo").nth(0)
+                            lesson_time_start = nth_target_lesson_date.locator(".urk_timewindowinfo").nth(1)
+                            lesson_time_end = nth_target_lesson_date.locator(".urk_timewindowinfo").nth(2)
 
-def get_lesson_time(container):    # Getting the time of a specific student couple
-    timewindow = container.find_element(By.CLASS_NAME, 'urk_timewindow')
-    timewindow_info = timewindow.find_elements(By.CLASS_NAME, 'urk_timewindowinfo')
-    last_two = timewindow_info[-2:]
-    lesson_time = [element.text for element in last_two]
-    return lesson_time
+                            target_time_coupe = await lesson_time_coupe.text_content()
+                            target_time_start = await lesson_time_start.text_content()
+                            target_time_end = await lesson_time_end.text_content()
 
-def get_study_couple(container):    # Getting the number of the student couple
-    timewindow = container.find_element(By.CLASS_NAME, 'urk_timewindow')
-    timewindow_infos = timewindow.find_elements(By.CLASS_NAME, 'urk_timewindowinfo')
-    last_two = timewindow_infos[:1]
-    study_couple = [element.text for element in last_two]
-    return study_couple
+                            formatted_output = f"\n{target_description}\n{target_time_coupe}: {target_time_start} - {target_time_end}"
+                            result.append(formatted_output)
+
+        if found_lessons:
+            await browser.close()
+            return "\n".join(result)
+        else:
+            result.clear()
+            await browser.close()
+            return f"*Учебная группа*: {group}\n*Дата*: {timedate}\nНа сегодняшний день расписания нет."
