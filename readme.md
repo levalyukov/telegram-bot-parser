@@ -1,5 +1,14 @@
-# Telegram Bot Schedule
+# Telegram Bot Student Schedule
 
-A simple college website parser, thanks to which you can easily get a schedule via a telegram bot.
+Thanks to this repository, you can understand how to parse sites using the [selenium](https://github.com/SeleniumHQ/selenium) and [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot) libraries.
 
-<p align="center"><img src="https://sun9-57.userapi.com/impg/d4spQQ13WwrQw0uyvVWdAn3kLiECTsyKh0VYhQ/RfVNp9pF9qE.jpg?size=435x352&quality=95&sign=6668a577ec8f1101a8f5d57678e2e858&type=album"></p>
+The python-telegram-bot library is used to send a command to a telegram bot, which then connects to the specified site and finds the necessary information using the script. In this case, the schedule for the specified study group.
+
+**Supported languages**: 🇷🇺 \
+**Telegram bot**: [@PrecoScheduleBot](https://t.me/PrecoScheduleBot)
+
+<img src="https://sun9-3.userapi.com/impg/Rh3pluSdeo6pJkpWb0d6idTKNVBObtkk2Idfaw/hTar8xDf6Xo.jpg?size=585x315&quality=95&sign=3626282bef8f3f95c2198fff1f2ecda3&type=album">
+
+## License
+
+repository is licensed by the [MIT](lisence) license.
