@@ -77,7 +77,6 @@ async def get_schedule_tomorrow(group:str):
         browser = await p.chromium.launch(headless=True)
         page = await browser.new_page()
         await page.goto(config['url'])
-
         await page.click(".select2-selection__rendered")
         await page.wait_for_timeout(100)
         await page.click(".select2-search__field")
@@ -140,4 +139,4 @@ async def get_schedule_tomorrow(group:str):
         else:
             result.clear()
             await browser.close()
-            return f"*Учебная группа*: {group}\n*Дата*: {target_date}\nНа сегодняшний день расписания нет."
+            return f"*Учебная группа*: {group}\n*Дата*: {target_date}\n\nРасписание отсутствует."
