@@ -86,7 +86,6 @@ async def tomorrow(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 if __name__ == "__main__":
     app = ApplicationBuilder().token(config["token"]).build()
-    logger.info("Bot is ready to work")
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("help", help))
     app.add_handler(CommandHandler("schedule", schedule))

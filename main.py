@@ -70,7 +70,7 @@ async def get_schedule(group: str):
         else:
             result.clear()
             await browser.close()
-            return f"*Учебная группа*: {group}\n*Дата*: {timedate}\nНа сегодняшний день расписания нет."
+            return f"*Учебная группа*: {group}\n*Дата*: {timedate}\n\nНа сегодняшний день расписания нет."
         
 async def get_schedule_tomorrow(group:str):
     async with async_playwright() as p:
