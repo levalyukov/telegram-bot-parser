@@ -67,7 +67,7 @@ async def tomorrow(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     
     if context.args:
         number_value = context.args[0]
-        logger.info(f"The '/schedule {number_value}' command was used")
+        logger.info(f"The '/tomorrow {number_value}' command was used")
         if number_value in config['groups']:
             try:
                 logger.info("Fetching schedule...")
