@@ -8,4 +8,4 @@ The python-telegram-bot library is used to send a command to a telegram bot, whi
 
 ## License
 
-repository is licensed by the [MIT](license) license.
+Repository is licensed by the [MIT](license) license.
