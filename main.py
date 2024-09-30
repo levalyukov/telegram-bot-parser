@@ -1,5 +1,5 @@
 from playwright.async_api import async_playwright
-from datetime import datetime
+from datetime import datetime, timedelta
 from config import config
 import asyncio
 
@@ -91,8 +91,8 @@ async def get_schedule_tomorrow(group:str):
         shedule = page.locator(".urk_shedule")
         shedule_blocks = shedule.locator(".urk_sheduleblock")
         all_lessons = await shedule_blocks.count()
-        timedate_day = int(datetime.today().strftime('%d'))
-        target_date = datetime.today().strftime(f'{timedate_day+1}.%m.%Y')
+        timedate_day = datetime.today().strftime('%d.%m.%Y') 
+        target_date = add_one_day(timedate_day)
 
         shedule_visible = await shedule.is_visible()
         shedule_count = await shedule.count()
@@ -140,3 +140,8 @@ async def get_schedule_tomorrow(group:str):
             result.clear()
             await browser.close()
             return f"*Учебная группа*: {group}\n*Дата*: {target_date}\n\nРасписание отсутствует."
+        
+async def add_one_day(date_string: str) -> str:
+    date_obj = datetime.strptime(date_string, "%d.%m.%Y")
+    next_day = date_obj + timedelta(days=1)
+    return next_day.strftime("%d.%m.%Y")
