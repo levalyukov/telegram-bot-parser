@@ -76,6 +76,7 @@ async def get_schedule_tomorrow(group:str):
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
         page = await browser.new_page()
+        
         await page.goto(config['url'])
         await page.click(".select2-selection__rendered")
         await page.wait_for_timeout(100)
@@ -92,7 +93,7 @@ async def get_schedule_tomorrow(group:str):
         shedule_blocks = shedule.locator(".urk_sheduleblock")
         all_lessons = await shedule_blocks.count()
         timedate_day = datetime.today().strftime('%d.%m.%Y') 
-        target_date = add_one_day(timedate_day)
+        target_date = await add_one_day(timedate_day)
 
         shedule_visible = await shedule.is_visible()
         shedule_count = await shedule.count()
@@ -136,6 +137,7 @@ async def get_schedule_tomorrow(group:str):
         if found_lessons:
             await browser.close()
             return "\n".join(result)
+        
         else:
             result.clear()
             await browser.close()
