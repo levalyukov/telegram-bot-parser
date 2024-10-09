@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from config import config
 import asyncio
 
-async def get_schedule(group: str):
+async def get_schedule(group: str) -> str:
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
         page = await browser.new_page()
@@ -72,7 +72,7 @@ async def get_schedule(group: str):
             await browser.close()
             return f"*Учебная группа*: {group}\n*Дата*: {timedate}\n\nНа сегодняшний день расписания нет."
         
-async def get_schedule_tomorrow(group:str):
+async def get_schedule_tomorrow(group:str) -> str:
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
         page = await browser.new_page()
