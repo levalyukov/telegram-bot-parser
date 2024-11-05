@@ -27,7 +27,7 @@ async def get_schedule(group: str) -> str:
             await page.click("#id_submitbutton")
             logger.info("Submitting form and waiting for schedule content...")
 
-            await page.wait_for_selector(".urk_shedule", timeout=30000)
+            await page.wait_for_selector(".urk_shedule", timeout=5000)
             shedule = page.locator(".urk_shedule")
             shedule_blocks = shedule.locator(".urk_sheduleblock")
             all_lessons = await shedule_blocks.count()
@@ -109,7 +109,7 @@ async def get_schedule_tomorrow(group: str) -> str:
             await page.click("#id_submitbutton")
             logger.info("Submitting form and waiting for schedule content...")
 
-            await page.wait_for_selector(".urk_shedule", timeout=30000)
+            await page.wait_for_selector(".urk_shedule", timeout=5000)
             shedule = page.locator(".urk_shedule")
             shedule_blocks = shedule.locator(".urk_sheduleblock")
             all_lessons = await shedule_blocks.count()
