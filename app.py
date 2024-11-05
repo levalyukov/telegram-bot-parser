@@ -18,14 +18,16 @@ async def get_schedule(group: str) -> str:
             await page.goto(config['url'])
             logger.info(f"Navigated to URL: {config['url']}...")
 
+            await page.wait_for_selector(".select2-selection__rendered")
             await page.click(".select2-selection__rendered")
-            await page.click(".select2-search__field")
+            await page.wait_for_selector(".select2-search__field")
             await page.fill(".select2-search__field", group)
             logger.info(f"Searching for group: {group}")
             await page.click(".select2-results__option")
             await page.click("#id_submitbutton")
             logger.info("Submitting form and waiting for schedule content...")
 
+            await page.wait_for_selector(".urk_shedule", timeout=30000)
             shedule = page.locator(".urk_shedule")
             shedule_blocks = shedule.locator(".urk_sheduleblock")
             all_lessons = await shedule_blocks.count()
@@ -70,20 +72,21 @@ async def get_schedule(group: str) -> str:
                                 formatted_output = f"\n{target_description}\n{target_time_coupe}: {target_time_start} - {target_time_end}"
                                 result.append(formatted_output)
 
-                await browser.close()
                 if found_lessons:
                     return "\n".join(result)
                 else:
-                    return f"*Учебная группа*: {group}\n*Дата*: {timedate}\n\nНа сегодняшний день расписания нет."
+                    return f"*Учебная группа*: {group}\n*Дата*: {timedate}\n\nНа сегодняшний день расписание отсутствует."
             else:
                 logger.warning("No schedule found or schedule not visible.")
-                await browser.close()
                 return f"*Учебная группа*: {group}\n*Дата*: {timedate}\n\nРасписание отсутствует."
+
         except Exception as e:
             logger.error(f"Error occurred: {e}")
+            return f"Произошла ошибка при получении расписания для {group} группы. Пожалуйста, попробуйте позже."
+        
+        finally:
             if browser:
                 await browser.close()
-            return f"Произошла ошибка при получении расписания для {group} группы. Пожалуйста, попробуйте позже."
 
 async def get_schedule_tomorrow(group: str) -> str:
     async with async_playwright() as p:
@@ -97,14 +100,16 @@ async def get_schedule_tomorrow(group: str) -> str:
             await page.goto(config['url'])
             logger.info(f"Navigated to URL: {config['url']}...")
 
+            await page.wait_for_selector(".select2-selection__rendered")
             await page.click(".select2-selection__rendered")
-            await page.click(".select2-search__field")
+            await page.wait_for_selector(".select2-search__field")
             await page.fill(".select2-search__field", group)
             logger.info(f"Searching for group: {group}")
             await page.click(".select2-results__option")
             await page.click("#id_submitbutton")
             logger.info("Submitting form and waiting for schedule content...")
 
+            await page.wait_for_selector(".urk_shedule", timeout=30000)
             shedule = page.locator(".urk_shedule")
             shedule_blocks = shedule.locator(".urk_sheduleblock")
             all_lessons = await shedule_blocks.count()
@@ -150,21 +155,21 @@ async def get_schedule_tomorrow(group: str) -> str:
                                 formatted_output = f"\n{target_description}\n{target_time_coupe}: {target_time_start} - {target_time_end}"
                                 result.append(formatted_output)
 
-                await browser.close()
                 if found_lessons:
                     return "\n".join(result)
                 else:
                     return f"*Учебная группа*: {group}\n*Дата*: {target_date}\n\nРасписание отсутствует."
             else:
                 logger.warning("No schedule found or schedule not visible.")
-                await browser.close()
                 return f"*Учебная группа*: {group}\n*Дата*: {target_date}\n\nРасписание отсутствует."
 
         except Exception as e:
             logger.error(f"Error occurred: {e}")
+            return f"Произошла ошибка при получении расписания для {group} группы. Пожалуйста, попробуйте позже."
+        
+        finally:
             if browser:
                 await browser.close()
-            return f"Произошла ошибка при получении расписания для {group} группы. Пожалуйста, попробуйте позже."
         
 async def add_one_day(date_string: str) -> str:
     date_obj = datetime.strptime(date_string, "%d.%m.%Y")
