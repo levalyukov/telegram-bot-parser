@@ -57,7 +57,7 @@ async def schedule(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         else:
             await update.message.reply_text("Указать можно только доступные учебные группы: " + ", ".join(config['groups']))
     else:
-        await update.message.reply_text("Пожалуйста, укажите учебную группу после команды. Пример: `/schedule 112`", parse_mode=ParseMode.MARKDOWN)
+        await update.message.reply_text("Пожалуйста, укажите учебную группу после команды. Пример: `/schedule 110`", parse_mode=ParseMode.MARKDOWN)
 
 async def tomorrow(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user_id = update.effective_user.id
@@ -82,7 +82,7 @@ async def tomorrow(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         else:
             await update.message.reply_text("Указать можно только доступные учебные группы: " + ", ".join(config['groups']))
     else:
-        await update.message.reply_text("Пожалуйста, укажите учебную группу после команды. Пример: `/tomorrow 112`", parse_mode=ParseMode.MARKDOWN)
+        await update.message.reply_text("Пожалуйста, укажите учебную группу после команды. Пример: `/tomorrow 110`", parse_mode=ParseMode.MARKDOWN)
 
 if __name__ == "__main__":
     app = ApplicationBuilder().token(config["token"]).build()
